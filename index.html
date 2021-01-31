@@ -14,6 +14,30 @@
     ></script>
     <!-- Import Babel to enable JSX: -->
     <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+    <style>
+      .door {
+        position: relative;
+        width: 400px;
+        height: 300px;
+        background: darkred;
+      }
+
+      .handle {
+        position: absolute;
+        top: 50px;
+        left: 50px;
+        width: 150px;
+        height: 30px;
+        background: lightgray;
+        border: none;
+        border-radius: 5px;
+        box-shadow: -10px 5px 10px rgba(0, 0, 0, 0.3);
+      }
+
+      .handle.open {
+        transform: rotate(-5deg) translateY(5px);
+      }
+    </style>
   </head>
   <body>
     <header>
@@ -23,21 +47,61 @@
     <main id="app-root"></main>
 
     <script type="text/babel">
-      // Create a component named "CarDoor"
+      class Car extends React.Component {
+        constructor(props) {
+          super(props)
+
+          this.state = {
+            hasKey: true,
+          }
+        }
+
+        render() {
+          return <CarDoor hasKey={this.state.hasKey} />
+        }
+      }
+
       class CarDoor extends React.Component {
         constructor(props) {
           super(props)
 
-          this.state = {}
+          this.state = {
+            isOpen: false,
+          }
+        }
+
+        tryHandle() {
+          if (this.props.hasKey) {
+            this.setState({
+              isOpen: true,
+            })
+
+            console.log('enter car')
+          } else {
+            console.error('need key')
+          }
         }
 
         render() {
-          return <div>TODO</div>
+          console.log(this.props.hasKey)
+
+          return (
+            <div className="door">
+              {this.state.isOpen ? (
+                <button className="handle open"></button>
+              ) : (
+                <button
+                  className="handle shut"
+                  onClick={() => this.tryHandle()}
+                ></button>
+              )}
+            </div>
+          )
         }
       }
 
       const root = document.querySelector('#app-root')
-      ReactDOM.render(<CarDoor />, root)
+      ReactDOM.render(<Car />, root)
     </script>
   </body>
 </html>
